@@ -2,15 +2,16 @@ package com.sweetwith.dailynote.domain.posts;
 
 import com.sweetwith.dailynote.domain.BaseTimeEntity;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 import javax.persistence.*;
 
-@Getter
-@NoArgsConstructor
+@Data
 @Entity
-public class Posts extends BaseTimeEntity {
+public class Post extends BaseTimeEntity {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,17 +23,17 @@ public class Posts extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private String author;
+    private Long userId;
+
+    public Post() {
+    }
 
     @Builder
-    public Posts(String title, String content, String author) {
+    public Post(String title, String content, Long userId) {
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.userId = userId;
     }
 
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
+
 }
