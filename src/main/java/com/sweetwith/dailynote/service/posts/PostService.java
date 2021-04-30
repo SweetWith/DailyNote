@@ -4,23 +4,22 @@ import com.sweetwith.dailynote.domain.posts.Post;
 import com.sweetwith.dailynote.domain.posts.PostRepository;
 import com.sweetwith.dailynote.web.dto.PostResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class PostService {
     private PostRepository postRepository;
+    private PostLikeService postLikeService;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, PostLikeService postLikeService) {
         this.postRepository = postRepository;
+        this.postLikeService = postLikeService;
     }
 
     public Long registerPost(String title, String content, Long userId) {
@@ -44,6 +43,10 @@ public class PostService {
                                 .comparing((Post post) -> post.getModifiedDate().toLocalTime())
                                 .reversed()));
         return TransferPostsDto(posts);
+    }
+
+    public void pushPostLike(Long postId, Long userId){
+        postLikeService.pushPostLike(postId,userId);
     }
 
     public List<PostResponseDto> getPostListByUserId(Long userId) {

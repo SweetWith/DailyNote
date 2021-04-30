@@ -18,9 +18,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAll();
 
     // update
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Post as p SET p.title =?2 , p.content =?3 WHERE p.Id =?1")
-    boolean updateTitleAndContent(Long id, String title, String content);
+    int updateTitleAndContent(Long id, String title, String content);
 
     // delete
     void deleteById(Long id);
