@@ -24,6 +24,7 @@ public class FileService
     private Map<Long, Long> userIdToFileIdMap;
 
     private FileRepository fileRepository;
+    private Long fileId;
 
     public FileService(FileRepository fileRepository)
     {
@@ -31,6 +32,13 @@ public class FileService
 
         postIdToFileIdMap = new HashMap<>();
         userIdToFileIdMap = new HashMap<>();
+
+        fileId = 0L;
+    }
+
+    public void clear()
+    {
+        fileId = 0L;
     }
 
     // CREATE
@@ -50,6 +58,7 @@ public class FileService
             e.printStackTrace();
         }
 
+        fileDto.setFileId(++fileId);
         fileRepository.save(fileDto.toEntity());
         
         postIdToFileIdMap.put(fileDto.getPostId(), fileDto.getFileId());
@@ -129,7 +138,8 @@ public class FileService
     @Transactional
     public void deleteFileByUserId(Long userId)
     {
-        Long fileId = postIdToFileIdMap.get(userId);
+        Long fileId = userIdToFileIdMap.get(userId);
+        System.out.println(fileId);
         deleteFileByFileId(fileId);
     }
 }

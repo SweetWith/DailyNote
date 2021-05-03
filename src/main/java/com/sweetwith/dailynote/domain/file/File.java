@@ -14,7 +14,6 @@ import javax.persistence.*;
 public class File extends BaseTimeEntity
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;
 
     @Column(nullable = false) private String fileName;

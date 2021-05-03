@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -48,6 +49,7 @@ public class FileServiceTest
     @DisplayName("Check createFile")
     public void checkCreateFile()
     {
+        fileService.clear();
         fileService.createFile(fileDto);
         Assertions.assertThat(fileRepository.findById(1L).get().equals(fileDto.toEntity()));
     }
@@ -56,7 +58,8 @@ public class FileServiceTest
     @DisplayName("Check readFileByFileId")
     public void checkReadFileByFileId()
     {
-        fileRepository.save(fileDto.toEntity());
+        fileService.clear();
+        fileService.createFile(fileDto);
         Assertions.assertThat(fileService.readFileByFileId(1L).equals(fileDto));
     }
 
@@ -64,7 +67,8 @@ public class FileServiceTest
     @DisplayName("Check readFileByPostId")
     public void checkReadFileByPostId()
     {
-        fileRepository.save(fileDto.toEntity());
+        fileService.clear();
+        fileService.createFile(fileDto);
         fileService.readFileByPostId(1L);
         Assertions.assertThat(fileService.readFileByPostId(1L).equals(fileDto));
     }
@@ -73,7 +77,8 @@ public class FileServiceTest
     @DisplayName("Check readFileByUserId")
     public void checkReadFileByUserId()
     {
-        fileRepository.save(fileDto.toEntity());
+        fileService.clear();
+        fileService.createFile(fileDto);
         fileService.readFileByUserId(2L);
         Assertions.assertThat(fileService.readFileByUserId(2L).equals(fileDto));
     }
@@ -82,6 +87,7 @@ public class FileServiceTest
     @DisplayName("Check updateFile")
     public void checkUpdateFile()
     {
+        fileService.clear();
         fileService.updateFile(fileDto);
         Assertions.assertThat(fileRepository.findById(1L).get().equals(fileDto.toEntity()));
     }
@@ -90,7 +96,8 @@ public class FileServiceTest
     @DisplayName("Check deleteFileByFileId")
     public void checkDeleteFileByFileId()
     {
-        fileRepository.save(fileDto.toEntity());
+        fileService.clear();
+        fileService.createFile(fileDto);
         fileService.deleteFileByFileId(1L);
         Assertions.assertThat(!fileRepository.existsById(1L));
     }
@@ -99,7 +106,8 @@ public class FileServiceTest
     @DisplayName("Check deleteFileByPostId")
     public void checkDeleteFileByPostId()
     {
-        fileRepository.save(fileDto.toEntity());
+        fileService.clear();
+        fileService.createFile(fileDto);
         fileService.deleteFileByPostId(1L);
         Assertions.assertThat(!fileRepository.existsById(1L));
     }
@@ -108,8 +116,9 @@ public class FileServiceTest
     @DisplayName("Check deleteFileByUserId")
     public void checkDeleteFileByUserId()
     {
-        fileRepository.save(fileDto.toEntity());
+        fileService.clear();
+        fileService.createFile(fileDto);
         fileService.deleteFileByUserId(2L);
-        Assertions.assertThat(!fileRepository.existsById(1L));
+        Assertions.assertThat(!fileRepository.existsById(2L));
     }
 }
