@@ -60,7 +60,7 @@ public class FileService
 
         fileDto.setFileId(++fileId);
         fileRepository.save(fileDto.toEntity());
-        
+
         postIdToFileIdMap.put(fileDto.getPostId(), fileDto.getFileId());
         userIdToFileIdMap.put(fileDto.getUserId(), fileDto.getFileId());
 
