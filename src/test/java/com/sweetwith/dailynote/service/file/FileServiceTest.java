@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,16 +34,7 @@ public class FileServiceTest
             .fileSize(10L)
             .postId(1L)
             .userId(2L)
-            .multipartFile(new MultipartFile() {
-                @Override public String getName() { return "test.txt"; }
-                @Override public String getOriginalFilename() { return "test.txt"; }
-                @Override public String getContentType() { return "text/plain"; }
-                @Override public boolean isEmpty() { return false; }
-                @Override public long getSize() { return 0; }
-                @Override public byte[] getBytes() { return new byte[0]; }
-                @Override public InputStream getInputStream() { return null; }
-                @Override public void transferTo(File dest) throws IllegalStateException { }
-            })
+            .multipartFile(new MockMultipartFile("test", "test.txt", "text/plain", "Hello World".getBytes()))
             .build();
 
     @Test
