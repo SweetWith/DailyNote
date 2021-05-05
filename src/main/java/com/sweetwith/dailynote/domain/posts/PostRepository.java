@@ -1,5 +1,6 @@
 package com.sweetwith.dailynote.domain.posts;
 
+import com.sweetwith.dailynote.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // Read
     Optional<Post> findById(Long id);
-    List<Post> findByUserId(Long userId);
+    List<Post> findByUser(User user);
     List<Post> findAll();
 
     // update

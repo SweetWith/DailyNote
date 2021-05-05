@@ -1,6 +1,7 @@
 package com.sweetwith.dailynote.web.dto;
 
 import com.sweetwith.dailynote.domain.posts.Post;
+import com.sweetwith.dailynote.domain.user.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
-    private Long userId;
+    private User user;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -18,7 +19,7 @@ public class PostResponseDto {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.userId = entity.getUserId();
+        this.user = entity.getUser();
         this.createdDate = entity.getCreatedDate();
         this.modifiedDate = entity.getModifiedDate();
     }

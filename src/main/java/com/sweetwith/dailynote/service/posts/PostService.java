@@ -2,6 +2,7 @@ package com.sweetwith.dailynote.service.posts;
 
 import com.sweetwith.dailynote.domain.posts.Post;
 import com.sweetwith.dailynote.domain.posts.PostRepository;
+import com.sweetwith.dailynote.domain.user.User;
 import com.sweetwith.dailynote.web.dto.PostResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,21 +15,21 @@ import java.util.Optional;
 @Service
 public class PostService {
     private PostRepository postRepository;
-    private PostLikeService postLikeService;
 
     @Autowired
-    public PostService(PostRepository postRepository, PostLikeService postLikeService) {
+    public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
-        this.postLikeService = postLikeService;
     }
 
-    public Long registerPost(String title, String content, Long userId) {
-        Post post = new Post(title, content, userId);
+    // CREATE
+    public Long registerPost(String title, String content, User user) {
+        Post post = new Post(title, content, user);
         return postRepository.save(post).getId();
     }
 
-    public PostResponseDto getPostDetail(Long id) {
-        Optional<Post> post = postRepository.findById(id);
+    // READ
+    public PostResponseDto getPostDetail(Long postId) {
+        Optional<Post> post = postRepository.findById(postId);
 
         return new PostResponseDto(post.get());
     }
@@ -40,29 +41,28 @@ public class PostService {
         posts.sort(Comparator
                 .comparing((Post post) -> post.getModifiedDate().toLocalDate())
                 .thenComparing(Comparator
-                                .comparing((Post post) -> post.getModifiedDate().toLocalTime())
-                                .reversed()));
+                        .comparing((Post post) -> post.getModifiedDate().toLocalTime())
+                        .reversed()));
         return TransferPostsDto(posts);
     }
 
-    public void pushPostLike(Long postId, Long userId){
-        postLikeService.pushPostLike(postId,userId);
-    }
 
-    public List<PostResponseDto> getPostListByUserId(Long userId) {
-        List<Post> posts = postRepository.findByUserId(userId);
+    public List<PostResponseDto> getPostListByUserId(User user) {
+        List<Post> posts = postRepository.findByUser(user);
         return TransferPostsDto(posts);
     }
 
+    // UPDATE
     public void modifyPost(Long id, String title, String content) {
         postRepository.updateTitleAndContent(id, title, content);
     }
 
-    public void deletePost(Long id) {
-        postRepository.deleteById(id);
+    // DELETE
+    public void deletePost(Long postId) {
+        postRepository.deleteById(postId);
     }
 
-    // NEED MAPPER?
+    // MAPPER
     public List<PostResponseDto> TransferPostsDto(List<Post> posts) {
         List<PostResponseDto> ret = new ArrayList<>();
         for (Post post : posts) {

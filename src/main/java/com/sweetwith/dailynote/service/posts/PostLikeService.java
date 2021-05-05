@@ -3,12 +3,14 @@ package com.sweetwith.dailynote.service.posts;
 import com.sweetwith.dailynote.domain.like.PostLike;
 import com.sweetwith.dailynote.domain.like.PostLikeRepository;
 import com.sweetwith.dailynote.domain.posts.Post;
+import com.sweetwith.dailynote.domain.user.User;
 import com.sweetwith.dailynote.web.dto.PostResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostLikeService {
@@ -19,43 +21,34 @@ public class PostLikeService {
         this.postLikeRepository = postLikeRepository;
     }
 
-    public void registerLike(Long postId) {
-        Post post = new Post();
-        post.setId(postId);
-
-        PostLike postLike = new PostLike();
-        postLike.setPost(post);
-
+    // CREATE
+    private void registerLike(Post post, User user) {
+        PostLike postLike = new PostLike(post, user);
         postLikeRepository.save(postLike);
     }
 
-    public void deletePostLike(Long postId){
-        postLikeRepository.deleteById(postId);
-    }
-
-    public List<PostLike> getPostLikeByPostId(Long postId) {
-        Post post = new Post();
-        post.setId(postId);
+    // READ
+    public List<PostLike> getPostLikeByPost(Post post) {
         return postLikeRepository.findByPost(post);
     }
 
-    public List<PostLike> getPostLikeByUserId(Long userId){
-        // TODO
-        return new ArrayList<>();
-    }
-
-    public void pushPostLike(Long postId, Long userId) {
-        // If the user has already clicked Like.
-        if(isAlreadyLike(postId,userId))
-            deletePostLike(postId);
+    // UPDATE
+    public void pushPostLike(Post post, User user) {
+        if (isAlreadyLike(post, user))
+            deletePostLike(post, user);
         else
-            registerLike(postId);
+            registerLike(post, user);
     }
 
-    public boolean isAlreadyLike(Long postId, Long userId){
-        // TODO
-        // PostId와 UserId로 Search 해서 있으면 true, 아니면 false
-        return true;
+    private boolean isAlreadyLike(Post post, User user) {
+        Optional<PostLike> byPostAndUser = postLikeRepository.findByPostAndUser(post, user);
+        if(byPostAndUser.isPresent())
+            return true;
+        return false;
     }
 
+    // DELETE
+    private void deletePostLike(Post post, User user) {
+        postLikeRepository.deleteByPostAndUser(post, user);
+    }
 }

@@ -1,12 +1,14 @@
 package com.sweetwith.dailynote.domain.like;
 
 import com.sweetwith.dailynote.domain.posts.Post;
-import lombok.Builder;
-import lombok.Data;
+import com.sweetwith.dailynote.domain.user.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@NoArgsConstructor
 @Entity
 @Table
 public class PostLike {
@@ -19,7 +21,12 @@ public class PostLike {
     @JoinColumn(name="Post_Id")
     private Post post;
 
-    public PostLike(){
-    }
+    @ManyToOne
+    @JoinColumn(name="User_Id")
+    private User user;
 
+    public PostLike(Post post, User user){
+        this.post = post;
+        this.user = user;
+    }
 }
