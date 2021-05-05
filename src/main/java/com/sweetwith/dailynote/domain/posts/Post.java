@@ -26,7 +26,7 @@ public class Post extends BaseTimeEntity {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name="User_Id")
+    //@JoinColumn(name="User_Id")
     private User user;
 
     @Builder
