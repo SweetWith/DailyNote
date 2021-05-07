@@ -5,9 +5,11 @@ import com.sweetwith.dailynote.domain.like.PostLikeRepository;
 import com.sweetwith.dailynote.domain.posts.Post;
 import com.sweetwith.dailynote.domain.posts.PostRepository;
 import com.sweetwith.dailynote.domain.user.User;
+import com.sweetwith.dailynote.domain.user.UserRepository;
 import com.sweetwith.dailynote.service.posts.PostLikeService;
 import com.sweetwith.dailynote.service.posts.PostService;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -23,26 +25,36 @@ import java.util.List;
 @Transactional
 public class PostLikeServiceTest {
     @Autowired PostLikeService postLikeService;
-    @Autowired PostService postService;
+    @Autowired PostRepository postRepository;
+    @Autowired
+    UserRepository userRepository;
+
+    Post post;
+    User user;
+
+    @Before
+    public void setup() {
+        user = new User("id01", "pw01");
+        userRepository.save(user);
+
+        post = new Post("TEST_TITLE", "TEST_CONTENT", user);
+        postRepository.save(post);
+    }
 
     @Test
     @DisplayName("PUSH PUSH LIKE")
     public void pushPostLike(){
-        // given
-        String title = "TEST_TITLE";
-        String content = "TEST_CONTENT";
+        postLikeService.pushPostLike(post,user);
+        Assertions.assertThat(postLikeService.getPostLikeByPost(post).size()).isEqualTo(1);
 
-        // TODO - Get User Object
-        User user = new User("aaaaaa","bbbbbb");
-        user.setId(1L);
+        postLikeService.pushPostLike(post,user);
+        Assertions.assertThat(postLikeService.getPostLikeByPost(post).size()).isEqualTo(0);
 
-        // when
-        Long postId = postService.registerPost(title,content,user);
-        Post post = new Post(postService.getPostDetail(postId));
         postLikeService.pushPostLike(post,user);
+        Assertions.assertThat(postLikeService.getPostLikeByPost(post).size()).isEqualTo(1);
+
         postLikeService.pushPostLike(post,user);
-        postLikeService.pushPostLike(post,user);
-        postLikeService.pushPostLike(post,user);
+        Assertions.assertThat(postLikeService.getPostLikeByPost(post).size()).isEqualTo(0);
     }
 
     @Test
@@ -52,18 +64,12 @@ public class PostLikeServiceTest {
         String title = "TEST_TITLE";
         String content = "TEST_CONTENT";
 
-        // TODO - Get User Object
-        User user1 = new User("aaaaaa","bbbbbb");
-        user1.setId(1L);
-        User user2 = new User("aaaaaa","bbbbbb");
-        user2.setId(2L);
-        User user3 = new User("aaaaaa","bbbbbb");
-        user3.setId(3L);
+        User user2 = new User("id02", "pw02");
+        userRepository.save(user2);
+        User user3 = new User("id03", "pw03");
+        userRepository.save(user3);
 
-        // when
-        Long postId = postService.registerPost(title,content,user1);
-        Post post = new Post(postService.getPostDetail(postId));
-        postLikeService.pushPostLike(post,user1);
+        postLikeService.pushPostLike(post,user);
         postLikeService.pushPostLike(post,user2);
         postLikeService.pushPostLike(post,user3);
 
