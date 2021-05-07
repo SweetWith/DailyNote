@@ -24,12 +24,11 @@ public class Post extends BaseTimeEntity {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
-//aaa
+
     @ManyToOne
-    //@JoinColumn(name="User_Id")
+    @JoinColumn(name="User_Id")
     private User user;
 
-    @Builder
     public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;

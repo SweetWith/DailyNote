@@ -22,7 +22,7 @@ public class PostLike {
     private Post post;
 
     @ManyToOne
-    //@JoinColumn(name="User_Id")
+    @JoinColumn(name="User_Id")
     private User user;
 
     public PostLike(Post post, User user){
