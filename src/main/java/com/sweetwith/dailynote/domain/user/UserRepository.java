@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>{
@@ -16,8 +15,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     // update
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE User as p SET p.loginId =?2 , p.loginPw =?3 WHERE p.Id =?1")
-    boolean updateTitleAndContent(Long id, String loginId, String loginPw);
+    @Query("UPDATE User as u SET u.loginPw =?2 WHERE u.Id =?1")
+    void updateLoginPw(Long id, String loginPw);
 
     // delete
     void deleteById(Long id);

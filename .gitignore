@@ -1,16 +1,15 @@
+# DailyNote
+.properties
 .gradle
 .idea
-.properties
-
-/build/
-/out/
-/src/main/resources/
+build
+out
+src/main/resources
 
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
-
 .DS_Store
 .env.local
 .env.development.local

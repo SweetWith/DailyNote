@@ -4,15 +4,9 @@ import com.sweetwith.dailynote.domain.user.User;
 import com.sweetwith.dailynote.domain.user.UserRepository;
 import com.sweetwith.dailynote.web.dto.UserResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class UserService {
@@ -34,8 +28,8 @@ public class UserService {
         return new UserResponseDto(user.get());
     }
 
-    public void modifyUser(Long id, String loginId, String loginPw) {
-        userRepository.updateTitleAndContent(id, loginId, loginPw);
+    public void modifyUser(Long id, String loginPw) {
+        userRepository.updateLoginPw(id, loginPw);
     }
 
     public void deleteUser(Long id) {
