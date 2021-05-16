@@ -2,6 +2,7 @@ package com.sweetwith.dailynote.domain.posts;
 
 import com.sweetwith.dailynote.domain.BaseTimeEntity;
 import com.sweetwith.dailynote.domain.user.User;
+import com.sweetwith.dailynote.web.dto.PostRequestDto;
 import com.sweetwith.dailynote.web.dto.PostResponseDto;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,9 @@ public class Post extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column
+    private Integer readAuthority;
+
     @ManyToOne
     @JoinColumn(name="User_Id")
     private User user;
@@ -33,6 +37,13 @@ public class Post extends BaseTimeEntity {
         this.title = title;
         this.content = content;
         this.user = user;
+    }
+
+    public Post(PostRequestDto postRequestDto){
+        title = postRequestDto.getTitle();
+        content = postRequestDto.getContent();
+        readAuthority = postRequestDto.getReadAuthority();
+        user = postRequestDto.getUser();
     }
 
     public Post(PostResponseDto postResponseDto){

@@ -3,6 +3,8 @@ package com.sweetwith.dailynote.service.posts;
 import com.sweetwith.dailynote.domain.posts.Post;
 import com.sweetwith.dailynote.domain.posts.PostRepository;
 import com.sweetwith.dailynote.domain.user.User;
+import com.sweetwith.dailynote.util.Constants;
+import com.sweetwith.dailynote.web.dto.PostRequestDto;
 import com.sweetwith.dailynote.web.dto.PostResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,8 @@ public class PostService {
     }
 
     // CREATE
-    public Long registerPost(String title, String content, User user) {
-        Post post = new Post(title, content, user);
+    public Long registerPost(PostRequestDto postRequestDto) {
+        Post post = new Post(postRequestDto);
         return postRepository.save(post).getId();
     }
 
@@ -34,16 +36,32 @@ public class PostService {
         return new PostResponseDto(post.get());
     }
 
-    public List<PostResponseDto> getPostList() {
+    public List<PostResponseDto> getPostListAll(User user) {
         List<Post> posts = postRepository.findAll();
 
-        // Order by ModifiedData as DESC
+        // Order by CreatedDate as DESC
         posts.sort(Comparator
-                .comparing((Post post) -> post.getModifiedDate().toLocalDate())
+                .comparing((Post post) -> post.getCreatedDate().toLocalDate())
+                .reversed()
                 .thenComparing(Comparator
-                        .comparing((Post post) -> post.getModifiedDate().toLocalTime())
+                        .comparing((Post post) -> post.getCreatedDate().toLocalTime())
                         .reversed()));
+
+        // TODO -> popSecretPost(posts, user);
+        // TODO -> NOT FRIEND POST DELETE
+
         return TransferPostsDto(posts);
+    }
+
+    public void popSecretPost(List<Post> posts, User user){
+        for (Post post: posts) {
+            if(!post.getUser().equals(user) && post.getReadAuthority() == Constants.READ_AUTHORITY_ONLY_ME)
+                posts.remove(post);
+        }
+    }
+
+    public void popNotFriendPost(List<Post> posts, User user){
+
     }
 
 

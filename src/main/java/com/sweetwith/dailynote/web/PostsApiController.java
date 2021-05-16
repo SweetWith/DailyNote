@@ -1,8 +1,8 @@
 package com.sweetwith.dailynote.web;
 
-import com.sweetwith.dailynote.domain.posts.Post;
 import com.sweetwith.dailynote.domain.user.User;
 import com.sweetwith.dailynote.service.posts.PostService;
+import com.sweetwith.dailynote.web.dto.PostRequestDto;
 import com.sweetwith.dailynote.web.dto.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +20,15 @@ public class PostsApiController {
 
     @GetMapping("/post")
     public List<PostResponseDto> getPostList() {
-        return postService.getPostList();
+        // TEMP
+        User user = new User();
+        //
+        return postService.getPostListAll(user);
     }
 
     @PostMapping("/post")
-    public Long registerPost(@RequestBody Post post) {
-        return postService.registerPost(post.getTitle(), post.getContent(), post.getUser());
+    public Long registerPost(@RequestBody PostRequestDto postRequestDto) {
+        return postService.registerPost(postRequestDto);
     }
 
     @DeleteMapping("/post/{id}")
