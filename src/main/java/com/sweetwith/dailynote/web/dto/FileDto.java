@@ -1,6 +1,8 @@
 package com.sweetwith.dailynote.web.dto;
 
 import com.sweetwith.dailynote.domain.file.File;
+import com.sweetwith.dailynote.domain.posts.Post;
+import com.sweetwith.dailynote.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +21,8 @@ public class FileDto
     private String fileType;
     private String fileAuthor;
     private Long fileSize;
-    private Long postId;
-    private Long userId;
+    private Post post;
+    private User user;
     private MultipartFile multipartFile;
 
     public File toEntity() // exclude multipartFile
@@ -32,8 +34,8 @@ public class FileDto
                 .fileType(fileType)
                 .fileAuthor(fileAuthor)
                 .fileSize(fileSize)
-                .postId(postId)
-                .userId(userId)
+                .post(post)
+                .user(user)
                 .build();
 
         return file;

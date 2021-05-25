@@ -3,9 +3,9 @@ package com.sweetwith.dailynote.service;
 import com.sweetwith.dailynote.domain.file.File;
 import com.sweetwith.dailynote.domain.file.FileRepository;
 import com.sweetwith.dailynote.web.dto.FileDto;
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -55,14 +55,17 @@ public class FileService
             e.printStackTrace();
         }
 
-        fileDto.setFileId(fileRepository.save(fileDto.toEntity()).getFileId());
+        File file = fileRepository.save(fileDto.toEntity());
+        fileDto.setFileId(file.getFileId());
+        fileDto.setPost(file.getPost());
+        fileDto.setUser(file.getUser());
 
-        postIdToFileIdListMap.putIfAbsent(fileDto.getPostId(), new LinkedList<>());
-        List<Long> postIdToFileIdList = postIdToFileIdListMap.get(fileDto.getPostId());
+        postIdToFileIdListMap.putIfAbsent(fileDto.getPost().getId(), new LinkedList<>());
+        List<Long> postIdToFileIdList = postIdToFileIdListMap.get(fileDto.getPost().getId());
         postIdToFileIdList.add(fileDto.getFileId());
 
-        userIdToFileIdListMap.putIfAbsent(fileDto.getUserId(), new LinkedList<>());
-        List<Long> userIdToFileIdList = userIdToFileIdListMap.get(fileDto.getUserId());
+        userIdToFileIdListMap.putIfAbsent(fileDto.getUser().getId(), new LinkedList<>());
+        List<Long> userIdToFileIdList = userIdToFileIdListMap.get(fileDto.getUser().getId());
         userIdToFileIdList.add(fileDto.getFileId());
 
         return fileDto;
@@ -80,7 +83,7 @@ public class FileService
             java.io.File ioFile = new java.io.File(file.getFilePath() + "/" + file.getFileName());
             FileItem fileItem = new DiskFileItem(ioFile.getName(), Files.probeContentType(ioFile.toPath()), false, ioFile.getName(), (int) ioFile.length(), ioFile.getParentFile());
             IOUtils.copy(new FileInputStream(ioFile), fileItem.getOutputStream());
-            multipartFile = new CommonsMultipartFile((org.apache.commons.fileupload.FileItem) fileItem);
+            multipartFile = new CommonsMultipartFile(fileItem);
         }
         catch (Exception e)
         {
@@ -94,8 +97,8 @@ public class FileService
                 .fileType(file.getFileType())
                 .fileAuthor(file.getFileAuthor())
                 .fileSize(file.getFileSize())
-                .postId(file.getPostId())
-                .userId(file.getUserId())
+                .post(file.getPost())
+                .user(file.getUser())
                 .multipartFile(multipartFile)
                 .build();
 
@@ -136,7 +139,7 @@ public class FileService
 
         if (!byOtherId)
         {
-            List<Long> postIdToFileIdList = postIdToFileIdListMap.get(file.getPostId());
+            List<Long> postIdToFileIdList = postIdToFileIdListMap.get(file.getPost().getId());
             for(Long fileIdInList : postIdToFileIdList)
             {
                 if(fileIdInList.equals(fileId))
@@ -146,7 +149,7 @@ public class FileService
                 }
             }
 
-            List<Long> userIdToFileIdList = userIdToFileIdListMap.get(file.getUserId());
+            List<Long> userIdToFileIdList = userIdToFileIdListMap.get(file.getUser().getId());
             for(Long fileIdInList : userIdToFileIdList)
             {
                 if(fileIdInList.equals(fileId))
