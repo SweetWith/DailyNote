@@ -1,15 +1,16 @@
 package com.sweetwith.dailynote.domain.posts;
 
 import com.sweetwith.dailynote.domain.BaseTimeEntity;
+import com.sweetwith.dailynote.domain.hashtag.PostHashTag;
 import com.sweetwith.dailynote.domain.user.User;
 import com.sweetwith.dailynote.web.dto.PostRequestDto;
 import com.sweetwith.dailynote.web.dto.PostResponseDto;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -32,6 +33,9 @@ public class Post extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="User_Id")
     private User user;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostHashTag> postHashTags = new ArrayList<>();
 
     public Post(String title, String content, User user) {
         this.title = title;
