@@ -1,5 +1,8 @@
 package com.sweetwith.dailynote.service.posts;
 
+import com.sweetwith.dailynote.domain.hashtag.HashTag;
+import com.sweetwith.dailynote.domain.hashtag.PostHashTag;
+import com.sweetwith.dailynote.domain.hashtag.PostHashTagRepository;
 import com.sweetwith.dailynote.domain.posts.Post;
 import com.sweetwith.dailynote.domain.posts.PostRepository;
 import com.sweetwith.dailynote.domain.user.User;
@@ -17,10 +20,12 @@ import java.util.Optional;
 @Service
 public class PostService {
     private PostRepository postRepository;
+    private PostHashTagRepository postHashTagRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, PostHashTagRepository postHashTagRepository) {
         this.postRepository = postRepository;
+        this.postHashTagRepository = postHashTagRepository;
     }
 
     // CREATE
@@ -34,6 +39,17 @@ public class PostService {
         Optional<Post> post = postRepository.findById(postId);
 
         return new PostResponseDto(post.get());
+    }
+
+    public List<HashTag> getHashTagsByPostId(Long postId){
+        Optional<Post> post = postRepository.findById(postId);
+        List<PostHashTag> postHashTags = postHashTagRepository.findPostHashTagByPost(post.get());
+
+        List<HashTag> ret = new ArrayList<>();
+        for (PostHashTag postHashTag : postHashTags ) {
+            ret.add(postHashTag.getHashTag());
+        }
+        return ret;
     }
 
     public List<PostResponseDto> getPostListAll(User user) {
